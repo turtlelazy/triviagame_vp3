@@ -1,0 +1,157 @@
+import random
+import urllib
+import urllib.request
+import json
+score = 100
+
+randomnum = 0
+choose = " "
+repeat = "start"
+while repeat == "start":
+    repeat = input("This is a trivia game! You will start off with 100 points. You will be given a question and will have to answer the question to the best of ur ability. Write the letter of your corresponding answer from the choices listed. If you get an answer right, 100 will be added to you score, whereas if you get a question wrong 50 point will be dedudcted. If you have no answer, press enter to skip so you lose no points nor gain. Type yes if you want to play. Type no if you don't.")
+    repeat = repeat.lower()
+
+    print (" ")
+
+    if repeat == "no":
+        print ("Sorry for wasting you time -_-")
+
+    if repeat != "no":
+        if repeat != "yes":
+            print ("I didn't get that, say it again.")
+            repeat = "start"
+
+
+while repeat == "yes":
+    score = 100
+    randomnum = 0
+    ez = ['https://opentdb.com/api.php?amount=10&category=9&difficulty=easy&type=multiple','https://opentdb.com/api.php?amount=10&category=31&difficulty=easy&type=multiple','https://opentdb.com/api.php?amount=10&category=17&difficulty=easy&type=multiple']
+    med = ['https://opentdb.com/api.php?amount=10&category=9&difficulty=medium&type=multiple','https://opentdb.com/api.php?amount=10&category=31&difficulty=medium&type=multiple','https://opentdb.com/api.php?amount=10&category=17&difficulty=medium&type=multiple']
+    hard = ['https://opentdb.com/api.php?amount=10&category=9&difficulty=hard&type=multiple','https://opentdb.com/api.php?amount=10&category=31&difficulty=hard&type=multiple','https://opentdb.com/api.php?amount=10&category=17&difficulty=hard&type=multiple']
+    url = []
+    rep2 = " "
+    while rep2 == " ":
+        rep2 = input("What difficulty? Easy, medium, or hard?")
+        rep2 = rep2.lower()
+
+        if rep2 == "easy":
+            url = ez
+
+        elif rep2 == "medium":
+            url = med
+
+        elif rep2 == "hard":
+            url = hard
+
+        else:
+            print ("Didn't get that. Please enter again your choice, make sure to spell it exactly the same way.")
+            rep2 = " "
+
+    rep3 = " "
+    while rep3 == " ":
+
+        rep3 = input("Which category? General Knowledge, Anime and Manga, or Science & Nature")
+        rep3 = rep3.lower()
+        if rep3 == "general knowledge":
+            url = url[0]
+        elif rep3 == "anime and manga":
+            url = url[1]
+        elif rep3 == "science & nature":
+            url = url[2]
+        else:
+            print ("Didn't get that. Please enter again you choice, make sure to spell it exactly the same way.")
+            rep3 = " "
+
+
+
+
+
+
+    json_obj=urllib.request.urlopen(url)
+    data = json_obj.read()
+
+    encoding = json_obj.info().get_content_charset('utf-8')
+    JSON_object = json.loads(data.decode(encoding))
+
+    lis = []
+    fill = ""
+
+    for item in JSON_object['results']:
+
+        print (item['question'])
+        lis = [str(item['correct_answer']), str(item['incorrect_answers'][0]),str(item['incorrect_answers'][1]),str(item['incorrect_answers'][2])]
+        randomnum = random.randint(1,4)
+        if randomnum == 1:
+            print ("A: " +lis[0])
+            print ("B: " +lis[1])
+            print ("C: " +lis[2])
+            print ("D: " +lis[3])
+
+            lis[0] = "A"
+
+        if randomnum == 2:
+            print ("A: "+lis[1])
+            print ("B: "+lis[0])
+            print ("C: "+lis[2])
+            print ("D: "+lis[3])
+            lis[0] = "B"
+
+        if randomnum == 3:
+            print ("A: "+lis[1])
+            print ("B: "+lis[2])
+            print ("C: "+lis[0])
+            print ("D: "+lis[3])
+            lis[0] = "C"
+        if randomnum == 4:
+            print ("A: "+lis[1])
+            print ("B: "+lis[2])
+            print ("C: "+lis[3])
+            print ("D: "+lis[0])
+            lis[0] = "D"
+        print ("")
+
+        see = "no"
+        while see == "no":
+            fill = input("Choose the correct answer!")
+            lis[0] = lis[0].lower()
+            fill = fill.lower()
+            print (" ")
+            keep = "s"
+
+            if fill == lis[0]:
+                score = score + 100
+                print ("Yay you got this question right.")
+                print ("Current Score: "+ str(score))
+                see = "yes"
+
+            elif fill == "":
+                print ("Stuck eh? No worries you lost no points. The correct answer was " + lis[0]+" by the way.")
+                print ("Current Score: "+ str(score))
+                see = "yes"
+
+
+            elif fill != "a":
+                if fill != "b":
+                    if fill != "c":
+                        if fill != "d":
+                            see = "no"
+                        elif fill == "d":
+                            keep = "yah"
+                    elif fill == "c":
+                        keep = "yah"
+                elif fill == "b":
+                    keep = "yah"
+            else:
+                keep = "yah"
+
+            if keep == "yah":
+                score = score - 50
+                print ("Better luck next time. Right answer was: "+lis[0].upper())
+                print ("Current Score: "+ str(score))
+                see = "yes"
+
+        print (" ")
+        fill = input("Press enter to keep going.")
+        print (" ")
+
+    repeat = input("Do you want to play again? Type yes if you do. Type no if not.")
